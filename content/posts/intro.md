@@ -1,6 +1,6 @@
 +++
 date = '2025-08-30T10:52:20+01:00'
-draft = true
+draft = false
 title = 'Intro'
 +++
 # 👋 Hi, I'm Joseph Olaoye
