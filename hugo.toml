@@ -1,7 +1,6 @@
 baseURL = "https://joeolaoye.co/blog/"
 title = "Thoughts and Words"
 languageCode = 'en-us'
-paginate = 10
 [caches]
   [caches.images]
     dir = ":cacheDir/images"
