@@ -1,3 +1,6 @@
-baseURL = 'https://example.org/'
+baseURL = 'https://blog.joeolaoye.com/'
 languageCode = 'en-us'
-title = 'My New Hugo Site'
+title = 'Thoughts and Words'
+[caches]
+  [caches.images]
+    dir = ":cacheDir/images"
