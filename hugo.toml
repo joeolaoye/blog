@@ -1,6 +1,7 @@
-baseURL = 'https://blog.joeolaoye.com/'
+baseURL = "https://joeolaoye.co/blog/"
+title = "Thoughts and Words"
+theme = "ananke"   # or your chosen theme
 languageCode = 'en-us'
-title = 'Thoughts and Words'
 [caches]
   [caches.images]
     dir = ":cacheDir/images"
