@@ -1,11 +1,11 @@
 +++
 date = '2025-09-10T05:55:13+01:00'
-draft = true
-title: "The Maker’s Paradox: Balancing Building and Leading in Software Engineering"
-description: "New engineering leaders often face the Maker’s Paradox — the tension between building software and leading the people who build it. Here’s why it happens and how to tackle it."
-author: "Joseph Olaoye"
-tags: ["Leadership", "Software Engineering", "Engineering Management", "Career Growth"]
-categories: ["Leadership", "Engineering"]
+draft = false
+title = "The Maker’s Paradox: Balancing Building and Leading in Software Engineering"
+description = "New engineering leaders often face the Maker’s Paradox — the tension between building software and leading the people who build it. Here’s why it happens and how to tackle it."
+author = "Joseph Olaoye"
+tags = ["Leadership", "Software Engineering", "Engineering Management", "Career Growth"]
+categories = ["Leadership", "Engineering"]
 +++
 
 # The Maker’s Paradox: Balancing Building and Leading in Software Engineering  
