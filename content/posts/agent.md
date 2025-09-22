@@ -3,7 +3,7 @@ date = '2025-09-22T10:59:35+01:00'
 draft = false
 title = 'AGENTS.md — Giving Coding Agents What They Need for Success'
 description = 'AGENTS.md is a simple open format for guiding AI coding agents. Here’s what AGENTS.md is, why it’s valuable, and how to adopt it in your projects.'
-author: "Joseph Olaoye"
+author = "Joseph Olaoye"
 tags =  ["AI", "Development Tools", "Coding Agents", "Best Practices"]
 categories = ["Tools", "AI", "Software Engineering"]
 +++
