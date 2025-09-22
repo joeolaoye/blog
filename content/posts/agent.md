@@ -16,14 +16,14 @@ In the age of AI-assisted coding, we often focus on the agents themselves — ho
 
 ## What Is AGENTS.md?
 
-[AGENTS.md](https://agents.md/) is an open format—a simple Markdown file you place in the root of your repository—that gives coding agents a predictable place to find instructions tailored for them. It complements `README.md`, which is mostly human-facing, by holding guidelines and details that help AI agents work effectively. :contentReference[oaicite:0]{index=0}
+[AGENTS.md](https://agents.md/) is an open format—a simple Markdown file you place in the root of your repository—that gives coding agents a predictable place to find instructions tailored for them. It complements `README.md`, which is mostly human-facing, by holding guidelines and details that help AI agents work effectively. 
 
 Examples of what it might contain:
 
-- Build and test commands :contentReference[oaicite:1]{index=1}  
-- Code style or formatting rules :contentReference[oaicite:2]{index=2}  
-- PR or commit message conventions :contentReference[oaicite:3]{index=3}  
-- Deployment or security considerations :contentReference[oaicite:4]{index=4}  
+- Build and test commands 
+- Code style or formatting rules   
+- PR or commit message conventions  
+- Deployment or security considerations 
 
 ---
 
@@ -33,11 +33,11 @@ Here’s what makes AGENTS.md valuable to teams building software today:
 
 1. **Clarity for agents.** Without AGENTS.md, agents may run arbitrary defaults, guess at commands, or use wrong assumptions. Explicit instructions reduce mistakes and friction.  
 
-2. **Cleaner human docs.** If you pack everything into README.md, that file becomes long, confusing, and cluttered. AGENTS.md lets you separate human-facing docs from agent-facing instructions. :contentReference[oaicite:5]{index=5}  
+2. **Cleaner human docs.** If you pack everything into README.md, that file becomes long, confusing, and cluttered. AGENTS.md lets you separate human-facing docs from agent-facing instructions. 
 
-3. **Ecosystem compatibility.** Many AI coding agents support AGENTS.md already — ranging from OpenAI’s Codex to numerous tools in the community. One file can serve many tools. :contentReference[oaicite:6]{index=6}  
+3. **Ecosystem compatibility.** Many AI coding agents support AGENTS.md already — ranging from OpenAI’s Codex to numerous tools in the community. One file can serve many tools. 
 
-4. **Consistency in large or monorepo projects.** You can use nested AGENTS.md files for sub-projects, so each part of your codebase has context-sensitive instructions. Agents pick up the nearest AGENTS.md to the file they’re working on. :contentReference[oaicite:7]{index=7}  
+4. **Consistency in large or monorepo projects.** You can use nested AGENTS.md files for sub-projects, so each part of your codebase has context-sensitive instructions. Agents pick up the nearest AGENTS.md to the file they’re working on. 
 
 ---
 
