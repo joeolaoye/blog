@@ -1,0 +1,26 @@
+{{/* Cleaner navigation: wordmark left, menu + socials right. */}}
+<nav class="pv3 ph3 ph4-ns" role="navigation" aria-label="Primary">
+  <div class="flex items-center justify-between">
+    <a href="{{ .Site.Home.RelPermalink }}" class="f4 fw6 no-underline" style="color:#f7f5f0;letter-spacing:-0.01em;">
+      {{ with .Site.Params.site_logo }}
+        <img src="{{ urls.RelURL . }}" class="mw4" alt="{{ $.Site.Title }}" />
+      {{ else }}
+        {{ .Site.Title }}<span style="color:var(--jo-accent);">.</span>
+      {{ end }}
+    </a>
+    <div class="flex items-center">
+      {{ if .Site.Menus.main }}
+        <ul class="pl0 mr3 list flex items-center ma0">
+          {{ range .Site.Menus.main }}
+            <li class="dib ml3">
+              <a href="{{ .URL }}" class="f6 f5-ns no-underline" style="color:#d7d3ca;">
+                {{ .Name }}
+              </a>
+            </li>
+          {{ end }}
+        </ul>
+      {{ end }}
+      {{ partials.IncludeCached "social/follow.html" . }}
+    </div>
+  </div>
+</nav>

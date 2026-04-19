@@ -1,0 +1,18 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(go env *)",
+      "Bash(find / -type d -name \"gohugo-theme-ananke*\")",
+      "Read(//Users/joeolaoye/go/pkg/mod/github.com/**)",
+      "Read(//Users/joeolaoye/go/pkg/**)",
+      "Read(//Users/joeolaoye/**)",
+      "Bash(hugo version *)",
+      "Bash(hugo mod *)",
+      "Bash(hugo --minify)",
+      "Bash(curl -s -o /dev/null -w \"home:%{http_code} \" http://localhost:1313/blog/)",
+      "Bash(curl -s -o /dev/null -w \"about:%{http_code} \" http://localhost:1313/blog/about/)",
+      "Bash(curl -s -o /dev/null -w \"posts:%{http_code} \" http://localhost:1313/blog/posts/)",
+      "Bash(curl -s -o /dev/null -w \"single:%{http_code}\\\\n\" http://localhost:1313/blog/posts/security/)"
+    ]
+  }
+}

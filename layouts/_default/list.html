@@ -1,0 +1,28 @@
+{{ define "header" }}{{ partials.Include "site-header.html" . }}{{ end }}
+
+{{ define "main" }}
+  <section class="mw7 center ph3 pv4 pv5-ns">
+    <header class="mb4">
+      <p class="ma0" style="font-family:var(--jo-font-mono);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--jo-accent);font-weight:500;">
+        {{ .Kind }}
+      </p>
+      <h1 class="f1 mt2 mb2" style="font-weight:700;letter-spacing:-0.022em;">{{ .Title }}</h1>
+      {{ with .Content }}<div class="jo-prose">{{ . }}</div>{{ end }}
+    </header>
+
+    {{ $pages := .Paginator.Pages }}
+    {{ range $pages }}
+      <article class="jo-post-row">
+        <time datetime="{{ .Date.Format "2006-01-02" }}">
+          {{ .Date | time.Format (site.Params.date_format | compare.Default "Jan 2, 2006") }}
+        </time>
+        <div>
+          <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+          {{ with .Description }}<p>{{ . }}</p>{{ else }}<p>{{ .Summary | transform.Plainify | strings.TrimSpace | strings.Truncate 200 }}</p>{{ end }}
+        </div>
+      </article>
+    {{ end }}
+
+    {{ template "_internal/pagination.html" . }}
+  </section>
+{{ end }}

@@ -1,0 +1,12 @@
+{{/* Minimal footer — copyright + socials. */}}
+<footer class="bg-jo-ink w-100" role="contentinfo">
+  <div class="mw8 center flex flex-wrap items-center justify-between pa3 ph4-ns">
+    <p class="ma0 f6" style="color:#d7d3ca;">
+      &copy; {{ now.Format "2006" }} {{ with .Site.Copyright | compare.Default .Site.Title }}{{ . | safe.HTML }}{{ end }}
+      · <a href="{{ .Site.Home.Permalink }}" class="no-underline" style="color:#d7d3ca;">{{ .Site.Title }}</a>
+    </p>
+    <div class="mt2 mt0-ns">
+      {{ partials.IncludeCached "social/follow.html" . }}
+    </div>
+  </div>
+</footer>

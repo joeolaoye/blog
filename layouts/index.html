@@ -1,0 +1,47 @@
+{{ define "header" }}{{ partials.Include "site-navigation.html" . }}{{ end }}
+{{ define "main" }}
+  <section class="jo-hero">
+    <p class="eyebrow">Engineering leader · Founder</p>
+    <h1>Joseph Olaoye</h1>
+    <p class="lede">
+      I build and lead engineering teams that ship payments,
+      AI-native products, and 0→1 platforms. Previously Director of
+      Engineering / CTO at <a href="https://korahq.com" rel="noopener">Kora</a>,
+      founding engineer on the teams that became
+      <a href="https://flutterwave.com" rel="noopener">Flutterwave</a> and
+      <a href="https://korapay.com" rel="noopener">Korapay</a>.
+    </p>
+    {{ $home := .Site.Home.RelPermalink }}
+    <div class="kicker">
+      <a href="{{ $home }}about/">About</a>
+      <a href="{{ $home }}posts/">All posts</a>
+      <a href="https://tjoc.dev" rel="noopener">tjoc.dev</a>
+      <a href="https://github.com/joeolaoye" rel="noopener">GitHub</a>
+      <a href="https://linkedin.com/in/joeolaoye" rel="noopener">LinkedIn</a>
+    </div>
+    {{ with .Content }}<div class="mt4">{{ . }}</div>{{ end }}
+  </section>
+
+  {{ $mainSections := site.Params.mainSections | compare.Default (collections.Slice "posts") }}
+  {{ $section := collections.Where $.Site.RegularPages "Section" "in" $mainSections }}
+  {{ $n := $.Param "recent_posts_number" | compare.Default 6 }}
+  {{ with $section }}
+  <section class="jo-recent">
+    <h2 class="jo-section-label">Writing</h2>
+    {{ range (collections.First $n .) }}
+      <article class="jo-post-row">
+        <time datetime="{{ .Date.Format "2006-01-02" }}">
+          {{ .Date | time.Format (site.Params.date_format | compare.Default "Jan 2, 2006") }}
+        </time>
+        <div>
+          <h3><a href="{{ .RelPermalink }}">{{ .Title }}</a></h3>
+          {{ with .Description }}<p>{{ . }}</p>{{ else }}<p>{{ .Summary | transform.Plainify | strings.TrimSpace | strings.Truncate 180 }}</p>{{ end }}
+        </div>
+      </article>
+    {{ end }}
+    {{ if gt (len $section) $n }}
+      <p class="mt4"><a href="{{ $.Site.Home.RelPermalink }}posts/">See all posts →</a></p>
+    {{ end }}
+  </section>
+  {{ end }}
+{{ end }}

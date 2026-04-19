@@ -1,12 +1,83 @@
 baseURL = "https://joeolaoye.co/blog/"
-title = "The Thoughts and Words of Joe Olaoye"
-languageCode = 'en-us'
+title = "Joseph Olaoye"
+languageCode = "en-us"
+copyright = "Joseph Olaoye"
+enableRobotsTXT = true
+enableEmoji = true
+summaryLength = 30
+pagination.pagerSize = 10
+
 [caches]
   [caches.images]
     dir = ":cacheDir/images"
+
 [module]
-[[module.imports]]
-disable = false
-ignoreConfig = false
-ignoreImports = false
-path = 'github.com/theNewDynamic/gohugo-theme-ananke/v2'
+  [[module.imports]]
+    disable = false
+    ignoreConfig = false
+    ignoreImports = false
+    path = "github.com/theNewDynamic/gohugo-theme-ananke/v2"
+
+[params]
+  author = "Joseph Olaoye"
+  description = "Notes on engineering leadership, AI-native products, and building payments at scale — by Joseph Olaoye."
+  site_logo = ""
+  background_color_class = "bg-jo-ink"
+  body_classes = "bg-jo-paper jo-theme"
+  featured_image_class = "cover bg-center"
+  text_color = "jo-body"
+  post_content_classes = "jo-prose"
+  show_reading_time = true
+  date_format = "Jan 2, 2006"
+  custom_css = ["custom.css"]
+  mainSections = ["posts"]
+  recent_posts_number = 4
+
+  [params.ananke]
+    show_recent_posts = true
+
+    [params.ananke.social]
+      [params.ananke.social.follow]
+        new_window_icon = false
+        networks = ["github", "linkedin", "twitter", "rss"]
+
+      [params.ananke.social.github]
+        username = "joeolaoye"
+      [params.ananke.social.linkedin]
+        username = "joeolaoye"
+      [params.ananke.social.twitter]
+        username = "joeolaoye"
+      [params.ananke.social.rss]
+        profilelink = "https://joeolaoye.co/blog/index.xml"
+
+[menu]
+  [[menu.main]]
+    name = "Posts"
+    url = "/posts/"
+    weight = 10
+  [[menu.main]]
+    name = "About"
+    url = "/about/"
+    weight = 20
+  [[menu.main]]
+    name = "tjoc.dev"
+    url = "https://tjoc.dev"
+    weight = 30
+
+[taxonomies]
+  tag = "tags"
+  category = "categories"
+
+[markup]
+  [markup.highlight]
+    style = "github"
+    lineNos = false
+    codeFences = true
+    guessSyntax = true
+    tabWidth = 2
+  [markup.goldmark.renderer]
+    unsafe = true
+  [markup.tableOfContents]
+    startLevel = 2
+    endLevel = 4
+    ordered = false

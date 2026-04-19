@@ -1,0 +1,377 @@
+/* =========================================================
+   Joseph Olaoye — custom theme overrides on top of Ananke
+   Ananke uses Tachyons utilities; we layer a refined palette
+   and typography on top without forking the theme.
+   ========================================================= */
+
+:root {
+  /* Palette */
+  --jo-ink: #0f1216;        /* near-black, warm graphite */
+  --jo-ink-soft: #1a1f26;
+  --jo-paper: #fbfaf7;      /* warm off-white */
+  --jo-paper-soft: #f3f1ec;
+  --jo-rule: #e6e3dc;
+  --jo-muted: #6b7280;
+  --jo-body: #1f2328;
+  --jo-accent: #b45309;     /* burnt amber — restrained, editorial */
+  --jo-accent-soft: #fcd9a5;
+  --jo-link: #0b5394;
+
+  /* Typography */
+  --jo-font-sans: -apple-system, BlinkMacSystemFont, "Inter", "Segoe UI",
+    Roboto, "Helvetica Neue", Arial, sans-serif;
+  --jo-font-serif: "Iowan Old Style", "Charter", "Palatino Linotype",
+    "URW Palladio L", P052, "Source Serif 4", "Source Serif Pro", Georgia, serif;
+  --jo-font-mono: ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Code",
+    "Source Code Pro", Menlo, Consolas, monospace;
+
+  /* Scale */
+  --jo-measure: 68ch;
+  --jo-radius: 6px;
+}
+
+/* --- Utility class shims so hugo.toml can reference tokens --- */
+.bg-jo-ink { background-color: var(--jo-ink) !important; }
+.bg-jo-paper { background-color: var(--jo-paper) !important; }
+.bg-jo-paper-soft { background-color: var(--jo-paper-soft) !important; }
+.jo-ink { color: var(--jo-ink) !important; }
+.jo-body { color: var(--jo-body) !important; }
+.jo-muted { color: var(--jo-muted) !important; }
+.jo-accent { color: var(--jo-accent) !important; }
+
+/* --- Base typography --- */
+body.jo-theme,
+.jo-theme {
+  font-family: var(--jo-font-sans);
+  color: var(--jo-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  font-feature-settings: "kern", "liga", "calt";
+}
+
+.jo-theme h1,
+.jo-theme h2,
+.jo-theme h3,
+.jo-theme h4,
+.jo-theme h5,
+.jo-theme h6,
+.jo-theme .f-headline-l,
+.jo-theme .f-subheadline-l,
+.jo-theme .f1,
+.jo-theme .f2,
+.jo-theme .f3 {
+  font-family: var(--jo-font-sans);
+  color: var(--jo-ink);
+  letter-spacing: -0.018em;
+  font-weight: 650;
+  line-height: 1.15;
+}
+
+.jo-theme h1.f1 { font-weight: 700; letter-spacing: -0.022em; }
+
+/* Long-form post body gets the serif for readability */
+.jo-theme .jo-prose,
+.jo-theme article .serif,
+.jo-theme article .nested-copy-line-height {
+  font-family: var(--jo-font-serif);
+  font-size: 1.125rem;
+  line-height: 1.65;
+  color: var(--jo-body);
+}
+
+.jo-theme .jo-prose h2,
+.jo-theme .jo-prose h3,
+.jo-theme .jo-prose h4 {
+  font-family: var(--jo-font-sans);
+  margin-top: 2.2em;
+  margin-bottom: 0.6em;
+}
+
+.jo-theme .jo-prose h2 { font-size: 1.5rem; }
+.jo-theme .jo-prose h3 { font-size: 1.2rem; }
+
+.jo-theme .jo-prose p,
+.jo-theme .jo-prose ul,
+.jo-theme .jo-prose ol {
+  max-width: var(--jo-measure);
+}
+
+/* --- Links --- */
+.jo-theme a,
+.jo-theme .nested-links a {
+  color: var(--jo-ink);
+  text-decoration: underline;
+  text-decoration-color: var(--jo-accent-soft);
+  text-decoration-thickness: 2px;
+  text-underline-offset: 3px;
+  transition: color 120ms ease, text-decoration-color 120ms ease;
+}
+.jo-theme a:hover,
+.jo-theme .nested-links a:hover {
+  color: var(--jo-accent);
+  text-decoration-color: var(--jo-accent);
+}
+
+/* Header/nav links against dark ink */
+.jo-theme header a,
+.jo-theme header .hover-white,
+.jo-theme header .white-90 {
+  color: #f7f5f0 !important;
+  text-decoration: none !important;
+}
+.jo-theme header a:hover {
+  color: var(--jo-accent-soft) !important;
+}
+
+/* Footer links */
+.jo-theme footer a,
+.jo-theme footer .white-70 {
+  color: #d7d3ca !important;
+  text-decoration: none !important;
+}
+.jo-theme footer a:hover { color: #fff !important; }
+
+/* --- Site header refinement --- */
+.jo-theme header .f-subheadline-l,
+.jo-theme header .f2 {
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  color: #f7f5f0;
+}
+
+/* --- Hero / homepage --- */
+.jo-hero {
+  padding: 4.5rem 1.25rem 2.5rem;
+  max-width: 48rem;
+  margin: 0 auto;
+}
+.jo-hero .eyebrow {
+  font-family: var(--jo-font-mono);
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--jo-accent);
+  margin: 0 0 1rem;
+}
+.jo-hero h1 {
+  font-size: clamp(2rem, 5vw, 3rem);
+  margin: 0 0 1rem;
+  letter-spacing: -0.025em;
+  line-height: 1.08;
+}
+.jo-hero .lede {
+  font-family: var(--jo-font-serif);
+  font-size: 1.2rem;
+  line-height: 1.55;
+  color: #2a2f36;
+  max-width: 38rem;
+  margin: 0 0 1.75rem;
+}
+.jo-hero .kicker {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.1rem;
+  font-size: 0.95rem;
+  color: var(--jo-muted);
+  font-family: var(--jo-font-sans);
+}
+.jo-hero .kicker a { color: var(--jo-ink); text-decoration-color: var(--jo-rule); }
+.jo-hero .kicker a:hover { color: var(--jo-accent); text-decoration-color: var(--jo-accent); }
+
+/* --- Recent posts list (homepage) --- */
+.jo-recent {
+  max-width: 48rem;
+  margin: 0 auto;
+  padding: 1.5rem 1.25rem 5rem;
+}
+.jo-recent h2.jo-section-label {
+  font-family: var(--jo-font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--jo-muted);
+  border-top: 1px solid var(--jo-rule);
+  padding-top: 1.25rem;
+  margin: 0 0 1.5rem;
+}
+.jo-post-row {
+  display: grid;
+  grid-template-columns: 7rem 1fr;
+  gap: 1.25rem;
+  padding: 1.1rem 0;
+  border-bottom: 1px solid var(--jo-rule);
+  align-items: baseline;
+}
+.jo-post-row time {
+  font-family: var(--jo-font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  color: var(--jo-muted);
+  text-transform: uppercase;
+}
+.jo-post-row h3 {
+  font-size: 1.15rem;
+  margin: 0 0 0.25rem;
+  letter-spacing: -0.01em;
+}
+.jo-post-row h3 a { text-decoration: none; }
+.jo-post-row p {
+  font-family: var(--jo-font-serif);
+  font-size: 0.98rem;
+  line-height: 1.5;
+  color: #3a4049;
+  margin: 0.25rem 0 0;
+}
+@media (max-width: 36rem) {
+  .jo-post-row { grid-template-columns: 1fr; gap: 0.35rem; }
+}
+
+/* --- Post single tuning --- */
+.jo-theme article header h1.f1 {
+  font-size: clamp(2rem, 4.5vw, 2.75rem);
+  margin-top: 0.25em;
+  margin-bottom: 0.3em;
+  font-weight: 700;
+  letter-spacing: -0.022em;
+}
+.jo-theme article header aside.b { /* section eyebrow */
+  font-family: var(--jo-font-mono);
+  font-size: 0.7rem;
+  letter-spacing: 0.18em;
+  color: var(--jo-accent);
+  font-weight: 500;
+  text-transform: uppercase;
+}
+.jo-theme article header time,
+.jo-theme article header .tracked {
+  font-family: var(--jo-font-mono);
+  font-size: 0.78rem;
+  letter-spacing: 0.06em;
+  color: var(--jo-muted);
+}
+
+/* Horizontal rules in prose */
+.jo-theme .jo-prose hr {
+  border: 0;
+  border-top: 1px solid var(--jo-rule);
+  margin: 2.5rem auto;
+  width: 40%;
+}
+
+/* Blockquotes */
+.jo-theme .lh-copy blockquote,
+.jo-theme .jo-prose blockquote {
+  border-left: 3px solid var(--jo-accent);
+  background: var(--jo-paper-soft);
+  margin: 1.75rem 0;
+  padding: 0.85rem 1.2rem;
+  font-style: italic;
+  color: #2a2f36;
+  border-radius: 0 var(--jo-radius) var(--jo-radius) 0;
+}
+
+/* Inline code + code blocks */
+.jo-theme code,
+.jo-theme kbd,
+.jo-theme pre,
+.jo-theme tt {
+  font-family: var(--jo-font-mono);
+}
+.jo-theme p code,
+.jo-theme li code {
+  background: var(--jo-paper-soft);
+  border: 1px solid var(--jo-rule);
+  padding: 0.08em 0.35em;
+  border-radius: 4px;
+  font-size: 0.88em;
+}
+.jo-theme pre,
+.jo-theme .highlight pre {
+  background: var(--jo-ink) !important;
+  color: #e6e3db !important;
+  padding: 1rem 1.1rem;
+  border-radius: var(--jo-radius);
+  overflow-x: auto;
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+.jo-theme pre code { background: transparent; border: 0; padding: 0; color: inherit; }
+
+/* Images in posts */
+.jo-theme .jo-prose img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 1.5rem auto;
+  border-radius: var(--jo-radius);
+}
+
+/* Tags/taxonomy chips */
+.jo-theme .tag,
+.jo-theme a[rel~="tag"] {
+  display: inline-block;
+  font-family: var(--jo-font-mono);
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
+  padding: 0.2rem 0.55rem;
+  border: 1px solid var(--jo-rule);
+  border-radius: 999px;
+  margin: 0 0.3rem 0.3rem 0;
+  color: var(--jo-muted);
+  text-decoration: none;
+  background: #fff;
+}
+.jo-theme a[rel~="tag"]:hover {
+  color: var(--jo-accent);
+  border-color: var(--jo-accent-soft);
+}
+
+/* Ananke social icon buttons — keep icons bright over dark bg */
+.jo-theme .ananke-socials .ananke-social-link .icon svg,
+.jo-theme .ananke-socials .ananke-social-link svg {
+  fill: #e6e3db;
+}
+.jo-theme .ananke-socials .ananke-social-link:hover .icon svg,
+.jo-theme .ananke-socials .ananke-social-link:hover svg {
+  fill: var(--jo-accent-soft);
+}
+
+/* Footer layout */
+.jo-theme footer.bg-jo-ink,
+.jo-theme footer[class*="bg-jo-ink"] {
+  padding: 2rem 1.25rem;
+  border-top: 1px solid #222831;
+  color: #d7d3ca;
+}
+
+/* Button-ish pill for CTAs inside markdown, used on about page */
+.jo-theme .jo-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin: 0.75rem 0 1.5rem;
+}
+.jo-theme .jo-chips a {
+  font-family: var(--jo-font-sans);
+  font-size: 0.9rem;
+  padding: 0.35rem 0.8rem;
+  border: 1px solid var(--jo-rule);
+  border-radius: 999px;
+  text-decoration: none;
+  color: var(--jo-ink);
+  background: #fff;
+}
+.jo-theme .jo-chips a:hover {
+  border-color: var(--jo-accent);
+  color: var(--jo-accent);
+}
+
+/* Tighten Ananke's default huge page header padding on interior pages */
+.jo-theme main > article > header {
+  max-width: 48rem;
+  margin: 0 auto;
+}
+
+/* Hide the oversize page-title hero on single posts (we render it in-article) */
+.jo-theme body.single header .pv3,
+.jo-theme body.single header .tc-l { }

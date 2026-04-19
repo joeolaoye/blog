@@ -1,0 +1,46 @@
+{{ define "header" }}{{ partials.Include "site-header.html" . }}{{ end }}
+
+{{ define "main" }}
+  {{ $page := . }}
+  <article class="mw7 center ph3 pv4 pv5-ns">
+    <header class="mb4">
+      <p class="ma0" style="font-family:var(--jo-font-mono);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--jo-accent);font-weight:500;">
+        {{ .CurrentSection.Title | compare.Default "Writing" }}
+      </p>
+      <h1 class="f1 mt2 mb2" style="font-weight:700;letter-spacing:-0.022em;line-height:1.1;">{{ .Title }}</h1>
+      <div class="f6" style="color:var(--jo-muted);font-family:var(--jo-font-mono);letter-spacing:.05em;">
+        {{ if not .Date.IsZero }}
+          <time {{ fmt.Printf `datetime="%s"` (.Date.Format "2006-01-02T15:04:05Z07:00") | safe.HTMLAttr }}>
+            {{ .Date | time.Format (site.Params.date_format | compare.Default "Jan 2, 2006") }}
+          </time>
+        {{ end }}
+        {{ if (or (compare.Eq (.Param "show_reading_time") true) (compare.Eq .CurrentSection.Params.show_reading_time true)) }}
+          · {{ lang.Translate "readingTime" .ReadingTime }}
+        {{ end }}
+        {{ with .Params.author | compare.Default .Site.Params.author }}
+          · <span style="color:var(--jo-body);">
+            {{- if reflect.IsSlice . -}}
+              {{ collections.Delimit . ", " | transform.Markdownify }}
+            {{- else -}}
+              {{ . | transform.Markdownify }}
+            {{- end -}}
+          </span>
+        {{ end }}
+      </div>
+    </header>
+
+    <div class="jo-prose">
+      {{ .Content }}
+      {{ partials.Include "tags.html" . }}
+    </div>
+
+    <nav class="flex justify-between mt5 pt4 f6" style="border-top:1px solid var(--jo-rule);color:var(--jo-muted);font-family:var(--jo-font-mono);letter-spacing:.05em;">
+      {{ with .PrevInSection }}
+        <a href="{{ .RelPermalink }}" class="no-underline" style="color:var(--jo-body);">← {{ .Title }}</a>
+      {{ else }}<span></span>{{ end }}
+      {{ with .NextInSection }}
+        <a href="{{ .RelPermalink }}" class="no-underline tr" style="color:var(--jo-body);">{{ .Title }} →</a>
+      {{ else }}<span></span>{{ end }}
+    </nav>
+  </article>
+{{ end }}
