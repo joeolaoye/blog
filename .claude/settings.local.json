@@ -12,7 +12,8 @@
       "Bash(curl -s -o /dev/null -w \"home:%{http_code} \" http://localhost:1313/blog/)",
       "Bash(curl -s -o /dev/null -w \"about:%{http_code} \" http://localhost:1313/blog/about/)",
       "Bash(curl -s -o /dev/null -w \"posts:%{http_code} \" http://localhost:1313/blog/posts/)",
-      "Bash(curl -s -o /dev/null -w \"single:%{http_code}\\\\n\" http://localhost:1313/blog/posts/security/)"
+      "Bash(curl -s -o /dev/null -w \"single:%{http_code}\\\\n\" http://localhost:1313/blog/posts/security/)",
+      "Bash(hugo --quiet)"
     ]
   }
 }

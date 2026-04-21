@@ -112,15 +112,34 @@ body.jo-theme,
   text-decoration-color: var(--jo-accent);
 }
 
-/* Header/nav links against dark ink */
+/* Header/nav links on light paper background */
 .jo-theme header a,
 .jo-theme header .hover-white,
 .jo-theme header .white-90 {
-  color: #f7f5f0 !important;
+  color: var(--jo-ink) !important;
   text-decoration: none !important;
 }
-.jo-theme header a:hover {
-  color: var(--jo-accent-soft) !important;
+.jo-theme header a:hover,
+.jo-theme header a:focus {
+  color: var(--jo-accent) !important;
+}
+.jo-theme .jo-site-header {
+  border-bottom: 1px solid var(--jo-rule);
+}
+.jo-theme .jo-nav-link {
+  color: var(--jo-ink) !important;
+}
+.jo-theme .jo-nav-link:hover {
+  color: var(--jo-accent) !important;
+}
+/* Social icons against light header */
+.jo-theme header .ananke-socials .ananke-social-link svg,
+.jo-theme header .ananke-socials .ananke-social-link .icon svg {
+  fill: var(--jo-ink);
+}
+.jo-theme header .ananke-socials .ananke-social-link:hover svg,
+.jo-theme header .ananke-socials .ananke-social-link:hover .icon svg {
+  fill: var(--jo-accent);
 }
 
 /* Footer links */
@@ -136,7 +155,7 @@ body.jo-theme,
 .jo-theme header .f2 {
   font-weight: 600;
   letter-spacing: -0.02em;
-  color: #f7f5f0;
+  color: var(--jo-ink);
 }
 
 /* --- Hero / homepage --- */
