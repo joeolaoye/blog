@@ -4,7 +4,7 @@ date: 2026-06-01
 draft: false
 ---
 
-# Designing an idempotent payment endpoint (the part most tutorials skip)
+## Idempotency in Real Systems
 
 If you build or work on payment systems, you've almost certainly seen a version of this.
 
