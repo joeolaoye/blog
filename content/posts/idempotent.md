@@ -1,140 +1,74 @@
----
-title: "Designing an idempotent payment endpoint (the part most tutorials skip)"
-date: 2026-06-01
-draft: false
----
-
-# Idempotency: The Payment Bug Almost Everyone Ships Once
+# The Payment Bug Almost Everyone Ships Once: Idempotency in Real Systems
 
 If you build or work on payment systems, you've almost certainly seen a version of this.
 
-An endpoint is clean. Tests are green. Everything looks good.
+An endpoint is clean. Tests are green. Then a customer's phone drops to one bar mid-checkout and they get charged twice.
 
-Then a customer's phone drops to one bar mid-checkout, the request times out, and they get charged twice.
-
-The charge succeeded, but the response never made it back. The client retries, and the server happily executes the charge again because, as far as it knows, this is a brand-new request.
+The request timed out on their end, the client retried, and the server happily ran the whole charge again because, as far as it knew, this was a brand-new request.
 
 That's the bug almost everyone ships once.
 
-## The Three Ways Duplicate Payments Happen
+The network timeout: the charge succeeded, but the response never made it back, so the client retries.
 
-### 1. The Network Timeout
+The webhook replay: your provider re-delivers an event because it didn't get a 2xx fast enough, so you process the same payment twice.
 
-The charge succeeds, but the response never reaches the client.
+And the impatient double-click: a user mashes the pay button because the spinner is slow, and two requests land milliseconds apart.
 
-The client assumes the operation failed and retries.
-
-### 2. The Webhook Replay
-
-Your payment provider doesn't receive a `2xx` response quickly enough and re-delivers the same event.
-
-Your system processes the payment again.
-
-### 3. The Double-Click
-
-The user gets impatient.
-
-The spinner feels slow.
-
-They hit the Pay button twice.
-
-Two requests arrive milliseconds apart.
-
----
-
-The honest framing is this:
-
-> A payment request is not "do this thing."
->
-> A payment request is "make sure this thing has happened exactly once."
-
-## The Trap: Check-Then-Act
-
-Most engineers start with the same solution:
-
-```text
-Before charging:
-1. Look up the order
-2. If no charge exists, create one
-```
-
-It feels safe.
-
-It isn't.
-
-This is a classic **check-then-act race condition**.
-
-Imagine two requests arriving almost simultaneously:
-
-```text
-Request A → checks → no charge found
-Request B → checks → no charge found
-
-Request A → creates charge
-Request B → creates charge
-```
-
-Both reads happen before either write completes.
-
-Both requests conclude they should proceed.
-
-Both create charges.
-
-Money leaks through the tiny gap between the read and the write.
-
-You cannot fix a concurrency problem with logic that:
-
-1. Reads
-2. Decides
-3. Writes
-
-The read and write are not atomic.
-
-That gap is where duplicate charges are born.
-
-## The Real Fix: Idempotency Keys
-
-The solution is an **idempotency key**.
-
-A single token that identifies a specific operation.
-
-If a request is retried, the system recognizes it as the same operation rather than a new one.
-
-An idempotency implementation has two parts.
-
-### Part 1: Request Fingerprint
-
-Store:
-
-* The idempotency key
-* Enough of the request payload to identify what was intended
-
-This catches misuse such as:
-
-```text
-Same key
-Different amount
-Different recipient
-```
-
-That should fail loudly.
-
-### Part 2: Stored Response
-
-When the operation completes:
-
-* Persist the result against the key
-* Return that stored result on future retries
-
-This distinction matters.
-
-Idempotency isn't merely:
-
-> "Don't execute twice."
+The honest framing is that a payment request is not "do this thing."
 
 It's:
 
-> "Return the same answer twice."
+> Make sure this thing has happened exactly once.
+
+## The Trap: Check Then Act
+
+The first instinct is always the same:
+
+> Before charging, look it up. If no charge exists for this order, create one.
+
+This feels safe.
+
+It is not.
+
+It's a classic check-then-act race condition.
+
+Two requests arrive at nearly the same time. Both look up the charge. Both see nothing because neither has written yet. Both proceed to create the charge.
+
+You can't fix a concurrency bug with logic that reads, then decides, then writes. The read and the write aren't atomic, and the gap between them is where the money leaks.
+
+## Idempotency Is More Than "Don't Run It Twice"
+
+The fix is an idempotency key: a single token that identifies a specific operation so that a retry is recognised as the same operation.
+
+The contract has two halves, and skipping the second is the most common mistake I see.
+
+### 1. A Request Fingerprint
+
+Store the key together with enough of the request payload to detect misuse.
+
+If someone reuses:
+
+* The same key
+* A different amount
+* A different recipient
+
+The request should fail loudly.
+
+### 2. A Stored Response
+
+When the operation completes, persist the result against that key.
+
+When a retry arrives, return the stored result instead of executing the operation again.
+
+This distinction matters.
+
+Idempotency isn't just:
+
+> Don't run it twice.
+
+It's:
+
+> Give the same answer twice.
 
 ## Client-Supplied vs Server-Derived Keys
 
@@ -142,222 +76,144 @@ There are two common approaches.
 
 ### Client-Supplied Keys
 
-The client generates a UUID and sends it via an `Idempotency-Key` header.
+The client generates a UUID and sends it in an `Idempotency-Key` header.
 
-This is the approach used by Stripe.
+This is the model Stripe uses.
 
-**Advantages**
+The advantage is that retries from the same logical attempt carry the same key, even when failures occur before the server can respond.
 
-* Retries preserve the same key automatically
-* Works even if the first request never reaches the server
-
-**Trade-offs**
-
-* You trust clients to generate keys correctly
+The trade-off is that you trust clients to generate keys correctly.
 
 ### Server-Derived Keys
 
-The server derives a key from values such as:
+The server derives a key from fields such as:
 
-```text
-Order ID + Amount + Time Window
-```
+* Order ID
+* Amount
+* Time window
 
-**Advantages**
+This removes dependence on the client but introduces the possibility of collisions between legitimate payments.
 
-* Less dependence on client behavior
+For public APIs, I generally prefer client-supplied keys with server-side fingerprint validation as the backstop.
 
-**Trade-offs**
+## Let the Database Be the Source of Truth
 
-* Legitimate payments can collide
-* Harder to distinguish separate intended transactions
+The part that makes idempotency durable is surprisingly simple:
 
-For public APIs, I generally prefer client-supplied keys combined with server-side fingerprint validation.
-
-## The Most Important Rule: Let the Database Decide
-
-Do not enforce uniqueness in application code.
+Don't enforce uniqueness in your application.
 
 Enforce it in the database.
 
-Create a unique constraint:
+Create a unique constraint on the idempotency key.
 
-```sql
-UNIQUE(idempotency_key)
-```
+The database—not your code and not your luck with timing—guarantees that two rows with the same key cannot exist.
 
-Then stop asking:
+Instead of asking:
 
-> "Does this already exist?"
+> Does this operation already exist?
 
-Instead:
+Attempt the insert and let the constraint answer the question.
 
-```text
-Try to insert.
-If it fails, the operation already exists.
-```
+If the insert raises a unique-violation, the operation already exists.
 
-The database becomes the source of truth.
+Check-then-act has a race window.
 
-Not your application.
+Insert-and-catch does not.
 
-Not timing.
-
-Not luck.
-
-The difference is subtle but critical.
-
-### Check-Then-Act
-
-```text
-Read
-Decide
-Write
-```
-
-Contains a race window.
-
-### Insert-and-Catch
-
-```text
-Insert
-Catch unique violation
-```
-
-No race window.
-
-The uniqueness decision happens atomically inside the database.
+The uniqueness decision happens atomically inside the database under its own locks.
 
 ## The Edge Case Most Tutorials Skip
 
-Consider two requests with the same key arriving simultaneously.
+Consider two concurrent requests with the same idempotency key.
 
-### Request A
+One wins the insert.
 
-Wins the insert.
+The other receives a unique-violation.
 
-### Request B
+Many tutorials say:
 
-Hits the unique constraint.
+> Return the stored response.
 
-Many tutorials stop here and say:
+But what if the winner hasn't finished yet?
 
-> "Return the stored response."
+The row exists, but the operation is still in progress.
 
-But there may not be a stored response yet.
+The losing request can't return a response that doesn't exist.
 
-Request A is still processing.
-
-The row exists, but the operation is not finished.
-
-You need three distinct states.
+You need three distinct states:
 
 ### In Progress
 
-The operation exists but hasn't completed.
+The operation exists but hasn't been completed.
 
-Options:
+Options include:
 
-* Poll briefly
-* Return `409 Conflict`
-* Ask the client to retry
+* Polling briefly
+* Returning HTTP 409
+* Asking the client to retry
 
 ### Completed
-
-The operation finished successfully.
 
 Return the stored response verbatim.
 
 ### Fingerprint Mismatch
 
-The same key is being reused for a different request.
+The caller reused a key with a different payload.
 
-Return `422 Unprocessable Entity`.
+Return HTTP 422.
 
 Anything else risks hiding a bug.
 
-## Making It Truly Durable
+The winning request performs its work and updates the idempotency record to completed in the same transaction that performs the charge.
 
-The winning request must:
+If the charge commits but the idempotency update doesn't, you're back where you started.
 
-1. Execute the charge
-2. Update the idempotency record
-3. Commit both together
+## Closing the Most Dangerous Gap
 
-If the charge commits but the idempotency update fails, you're back where you started.
+I'm not theorising here.
 
-The dangerous gap is:
-
-```text
-Money moved
-Record missing
-```
-
-That's how reconciliation nightmares begin.
-
-## Lessons from Building Payment Systems
-
-I'm not theorizing here.
-
-I built the first APIs at Flutterwave and served as founding CTO at Korapay.
-
-Idempotency and reconciliation aren't whiteboard topics for me. They're problems that have to work when real money is moving and mistakes mean:
-
-* Customers charged twice
-* Merchants losing trust
-* Ledgers refusing to balance
+I built the first APIs at Flutterwave and was the founding CTO at Korapay. Idempotency and reconciliation aren't whiteboard topics for me. These are problems I've had to solve while real money was moving, and mistakes meant customers being charged twice or ledgers refusing to balance.
 
 I'm carrying the same discipline into ConchPay, the payment processor I'm currently designing.
 
-The architecture decision I've settled on is straightforward:
+The architectural decision I've landed on is simple:
 
 > The idempotency record and the ledger entry live in the same transaction.
 
-The unique-key write is not a protective layer sitting in front of the payment flow.
+The unique-key write isn't a layer bolted in front of the payment flow.
 
 It is part of the payment flow.
 
-The failure mode I trust least is:
+The most dangerous failure mode in payments is the gap between:
 
-```text
-I charged the card.
-But I failed to record that I charged the card.
-```
+> "I charged the card."
 
-The only reliable way to eliminate that gap is to make both operations part of the same commit.
+and
 
-Additionally:
+> "I recorded that I charged the card."
 
-* Keys are scoped per merchant
-* Keys have explicit TTLs
-* Expiration is intentional, not accidental
+The only way I trust to eliminate that gap is to make them the same commit.
 
-## Your Payment API Review Checklist
+Keys carry a TTL and are scoped per merchant.
+
+## The PR Review Checklist
 
 Before approving a payment endpoint, verify all seven:
 
-* [ ] Unique database constraint on the idempotency key
-* [ ] Insert-and-catch, not check-then-insert
-* [ ] Charge and idempotency record committed in the same transaction
-* [ ] Stored response returned on retries
-* [ ] In-progress state handled separately from completed
-* [ ] Fingerprint mismatches fail loudly with a 4xx response
-* [ ] Keys are scoped per merchant and expire via TTL
+* A unique constraint in the database on the idempotency key
+* Insert-and-catch, not check-then-insert
+* Charge and idempotency record committed in the same transaction
+* Stored responses returned on retries
+* In-progress requests handled separately from completed requests
+* Fingerprint mismatches failing loudly with a 4xx response
+* Keys scoped per merchant and expired intentionally via TTL
 
-If all seven are present, your endpoint is far more likely to survive:
+Tick all seven, and your endpoint survives the timeout, the replay, and the double-click.
 
-* Network timeouts
-* Webhook replays
-* User double-clicks
+## About Me
 
-## Final Thought: IDs Matter More Than They Look
+I built Flutterwave's first APIs and was Korapay's founding CTO. I've migrated core-banking systems and shipped cross-border banking applications.
 
-IDs are one of those parts of a system that feel like plumbing right up until they become the entire story.
+Today, I build payment systems for fintech founders.
 
-The right ID disappears into the background.
-
-The wrong one shows up in every incident review for the next year.
-
-Pick the simplest scheme that survives your next order of magnitude.
-
-Then be ready to evolve it when it doesn't.
+If your company depends on the layer where money moves, that's the layer I work on.
