@@ -1,4 +1,10 @@
-# The Payment Bug Almost Everyone Ships Once: Idempotency in Real Systems
+---
+title: "Designing an idempotent payment endpoint (the part most tutorials skip)"
+date: 2026-06-01
+draft: false
+---
+
+# Designing an idempotent payment endpoint (the part most tutorials skip)
 
 If you build or work on payment systems, you've almost certainly seen a version of this.
 
