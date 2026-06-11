@@ -56,6 +56,10 @@ pagination.pagerSize = 10
     url = "/posts/"
     weight = 10
   [[menu.main]]
+    name = "Building"
+    url = "/building/"
+    weight = 15
+  [[menu.main]]
     name = "About"
     url = "/about/"
     weight = 20

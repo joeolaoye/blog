@@ -2,6 +2,7 @@
 title: "Building Borderless: an OS for money movement"
 date: 2026-04-21
 draft: false
+building: true
 ---
 
 A few years ago I sat in an office in Lagos, watching a support queue fill up with the same message in different words. *Did it go through?* *It says sent but nothing has arrived.* *Please help, the rent is due tomorrow.*
