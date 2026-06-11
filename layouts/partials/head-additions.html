@@ -1,0 +1,69 @@
+{{- /*
+  head-additions.html — rendered inside <head> by the Ananke theme.
+
+  Adds JSON-LD structured data for AEO (so ChatGPT / Claude / Perplexity / Google
+  can extract and cite posts). The theme already emits OpenGraph, Twitter cards,
+  and basic schema.org microdata; this adds the richer JSON-LD those lack:
+
+    • BlogPosting   — on every post in the "posts" section
+    • FAQPage       — opt-in: add a `faq` list to a post's front matter:
+                        faq:
+                          - q: "How do you make a payout idempotent?"
+                            a: "Persist an idempotency key before the side effect…"
+    • Person + WebSite — on the home page, for entity grounding.
+
+  Note: inside <script>, Go's html/template uses a JS context, so the jsonify
+  output must be piped through `safe.JS` (not safe.HTML) or it gets re-encoded
+  into a quoted string. json.Marshal already escapes <, >, & to \u00xx.
+*/ -}}
+{{- $iso := "2006-01-02T15:04:05Z07:00" -}}
+{{- $authorName := site.Params.author | default "Joseph Olaoye" -}}
+{{- $sameAs := slice "https://github.com/joeolaoye" "https://www.linkedin.com/in/joeolaoye" "https://x.com/joeolaoye" -}}
+{{- $person := dict "@type" "Person" "name" $authorName "url" "https://joeolaoye.co" "sameAs" $sameAs -}}
+
+{{- if and .IsPage (eq .Section "posts") -}}
+  {{- $desc := (.Description | default .Summary) | plainify | htmlUnescape | chomp -}}
+  {{- $ld := dict
+      "@context" "https://schema.org"
+      "@type" "BlogPosting"
+      "headline" (.Title | truncate 110)
+      "name" .Title
+      "description" $desc
+      "url" .Permalink
+      "mainEntityOfPage" (dict "@type" "WebPage" "@id" .Permalink)
+      "datePublished" (.Date.Format $iso)
+      "dateModified" (.Lastmod.Format $iso)
+      "author" $person
+      "publisher" $person
+      "inLanguage" (site.LanguageCode | default "en-us")
+  -}}
+  {{- with .Params.tags }}{{ $ld = merge $ld (dict "keywords" (delimit . ", ")) }}{{ end -}}
+  {{- with .WordCount }}{{ $ld = merge $ld (dict "wordCount" .) }}{{ end -}}
+  {{- with .Params.images }}{{ $ld = merge $ld (dict "image" (slice (absURL (index . 0)))) }}{{ end -}}
+  <script type="application/ld+json">{{ $ld | jsonify | safe.JS }}</script>
+  {{- with .Params.faq -}}
+    {{- $items := slice -}}
+    {{- range . -}}
+      {{- $items = $items | append (dict "@type" "Question" "name" .q "acceptedAnswer" (dict "@type" "Answer" "text" .a)) -}}
+    {{- end -}}
+    {{- $faq := dict "@context" "https://schema.org" "@type" "FAQPage" "mainEntity" $items -}}
+  <script type="application/ld+json">{{ $faq | jsonify | safe.JS }}</script>
+  {{- end -}}
+{{- end -}}
+
+{{- if .IsHome -}}
+  {{- $homePerson := merge $person (dict
+      "@context" "https://schema.org"
+      "description" (site.Params.description | plainify | chomp)
+      "knowsAbout" (slice "Payments infrastructure" "Distributed systems" "Engineering leadership" "AI-native products")
+  ) -}}
+  <script type="application/ld+json">{{ $homePerson | jsonify | safe.JS }}</script>
+  {{- $website := dict
+      "@context" "https://schema.org"
+      "@type" "WebSite"
+      "name" site.Title
+      "url" site.BaseURL
+      "author" (dict "@type" "Person" "name" $authorName)
+  -}}
+  <script type="application/ld+json">{{ $website | jsonify | safe.JS }}</script>
+{{- end -}}
