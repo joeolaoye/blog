@@ -27,6 +27,9 @@ jobs:
       HUGO_VERSION: 0.148.2
       NODE_VERSION: 22.18.0
       TZ: Africa/Lagos
+      # Public project key, emitted into the built site only when configured.
+      # Never place a PostHog personal or other privileged API key here.
+      POSTHOG_KEY: ${{ secrets.POSTHOG_KEY }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5

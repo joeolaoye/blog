@@ -81,7 +81,11 @@ pagination.pagerSize = 10
     tabWidth = 2
   [markup.goldmark.renderer]
     unsafe = true
-  [markup.tableOfContents]
+[markup.tableOfContents]
     startLevel = 2
     endLevel = 4
     ordered = false
+
+[security]
+  [security.funcs]
+    getenv = ['^HUGO_', '^CI$', '^POSTHOG_KEY$']

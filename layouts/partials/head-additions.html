@@ -20,6 +20,7 @@
 {{- $authorName := site.Params.author | default "Joseph Olaoye" -}}
 {{- $sameAs := slice "https://github.com/joeolaoye" "https://www.linkedin.com/in/joeolaoye" "https://x.com/joeolaoye" -}}
 {{- $person := dict "@type" "Person" "name" $authorName "url" "https://joeolaoye.co" "sameAs" $sameAs -}}
+{{- $posthogKey := getenv "POSTHOG_KEY" -}}
 
 {{- if and .IsPage (eq .Section "posts") -}}
   {{- $desc := (.Description | default .Summary) | plainify | htmlUnescape | chomp -}}
@@ -49,6 +50,22 @@
     {{- $faq := dict "@context" "https://schema.org" "@type" "FAQPage" "mainEntity" $items -}}
   <script type="application/ld+json">{{ $faq | jsonify | safe.JS }}</script>
   {{- end -}}
+{{- end -}}
+
+{{- if $posthogKey -}}
+{{- /* Pageview analytics is opt-in at build time. The project key is intentionally public; no privileged API key is emitted. */ -}}
+<script defer src="https://us.i.posthog.com/static/array.js"></script>
+<script defer>
+  window.addEventListener("DOMContentLoaded", function () {
+    if (!window.posthog) return;
+    window.posthog.init({{ $posthogKey | jsonify | safe.JS }}, {
+      api_host: "https://us.i.posthog.com",
+      person_profiles: "identified_only",
+      capture_pageview: true,
+      capture_pageleave: true
+    });
+  });
+</script>
 {{- end -}}
 
 {{- if .IsHome -}}
