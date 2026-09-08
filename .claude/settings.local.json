@@ -13,7 +13,10 @@
       "Bash(curl -s -o /dev/null -w \"about:%{http_code} \" http://localhost:1313/blog/about/)",
       "Bash(curl -s -o /dev/null -w \"posts:%{http_code} \" http://localhost:1313/blog/posts/)",
       "Bash(curl -s -o /dev/null -w \"single:%{http_code}\\\\n\" http://localhost:1313/blog/posts/security/)",
-      "Bash(hugo --quiet)"
+      "Bash(hugo --quiet)",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "Bash(git push *)"
     ]
   }
 }
