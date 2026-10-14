@@ -33,6 +33,19 @@
       </div>
     </header>
 
+    {{ with .Params.featured_image }}
+      <figure class="jo-featured-image ma0 mb4">
+        <img
+          src="{{ . | urls.RelURL }}"
+          alt="{{ $page.Params.featured_image_alt | compare.Default $page.Title }}"
+          {{ with $page.Params.featured_image_width }}width="{{ . }}"{{ end }}
+          {{ with $page.Params.featured_image_height }}height="{{ . }}"{{ end }}
+          loading="eager"
+          decoding="async"
+        >
+      </figure>
+    {{ end }}
+
     <div class="jo-prose">
       {{ .Content }}
       {{ partials.Include "tags.html" . }}

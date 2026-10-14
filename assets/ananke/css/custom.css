@@ -317,6 +317,14 @@ body.jo-theme,
 .jo-theme pre code { background: transparent; border: 0; padding: 0; color: inherit; }
 
 /* Images in posts */
+.jo-theme .jo-featured-image img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border: 1px solid var(--jo-rule);
+  border-radius: var(--jo-radius);
+}
+
 .jo-theme .jo-prose img {
   display: block;
   max-width: 100%;

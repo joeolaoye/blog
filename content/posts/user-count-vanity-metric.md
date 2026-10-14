@@ -6,6 +6,11 @@ description = "User count shows how many people arrived. Activation, retention, 
 author = "Joseph Olaoye"
 tags = ["Startup Metrics", "Unit Economics", "Product Strategy", "Growth"]
 categories = ["Startups", "Business", "Product"]
+featured_image = "images/posts/user-count-vanity-metric.webp"
+featured_image_alt = "Infographic comparing two hypothetical software companies: 100,000 users and $5K monthly revenue versus 2,000 users and $20K monthly revenue, illustrating that user count alone does not show business health."
+featured_image_width = 1122
+featured_image_height = 1402
+images = ["images/posts/user-count-vanity-metric.webp"]
 +++
 
 “We have 100,000 users.”
